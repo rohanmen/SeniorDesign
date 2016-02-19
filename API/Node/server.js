@@ -8,15 +8,15 @@ app.use(bodyParser.json());
 
 var port = 8080;
 var router = express.Router();
-var outputFile = 'database.json';
-var command_template = 'command_template.json';
+var outputFile = 'Node/database.json';
+var command_template = 'Node/command_template.json';
 var database = JSON.parse(fs.readFileSync(outputFile, 'utf8'));
 
 
 function writeToFile()
 {
-	//write to file for testing purposes
 	var databaseJSON = JSON.stringify(database);
+	console.log(databaseJSON);
 	fs.writeFileSync(outputFile, databaseJSON);
 }
 
@@ -26,8 +26,10 @@ function addCommand(type, psu_id)
 	var json = JSON.parse(fs.readFileSync(command_template, 'utf8'));
 	json['type'] = type;
 	json['psu_id'] = psu_id;
+	console.log("here is the json");
 	console.log(json);
 	database.push(json);
+	console.log(database);
 	//writeToFile();
 }
 
@@ -77,3 +79,19 @@ app.use('/api', router);
 
 app.listen(port, '0.0.0.0');
 console.log('Starting port ' + port);
+
+
+process.stdin.resume();
+process.on('exit', function() {
+	writeToFile();
+	process.exit();
+});
+process.on('SIGINT', function() {
+	writeToFile();
+	process.exit();
+});
+process.on('uncaughtException', function() {
+	writeToFile();
+	process.exit();
+});
+

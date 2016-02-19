@@ -1,0 +1,9 @@
+for pi:
+set up pi
+set up wifi
+set up git
+pull code
+install node and modules
+set up ssh
+install avafruit libraries
+install servo stuff
