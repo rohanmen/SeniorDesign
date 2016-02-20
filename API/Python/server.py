@@ -1,9 +1,15 @@
 import json
 import time
 import urllib2
+import commands
+import subprocess
+
+bashCommand = "hostname -I"
+process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+IP = process.communicate()[0].split()[0]
 
 PORT = '8080'
-URL = 'http://172.20.10.3:8080/api/command' 
+URL = 'http://' + IP + ':' + PORT + '/api/command' 
 print URL
 
 while True:

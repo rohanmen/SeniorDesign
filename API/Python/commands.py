@@ -57,13 +57,13 @@ def wait(seconds):
 #ir distance sensor code
 def get_ir_distance(channel):
 	r = []
-    for i in range (0,10):
-        r.append(mcp3008.readadc(channel))
-    a = sum(r)/10.0
-    v = (a/1023.0)*3.3
-    d = 16.2537 * v**4 - 129.893 * v**3 + 382.268 * v**2 - 512.611 * v + 306.439
-    cm = int(round(d))
-    return cm
+	for i in range(0, 10):
+	    r.append(mcp3008.readadc(channel))
+    	a = sum(r)/10.0
+    	v = (a/1023.0)*3.3
+    	d = 16.2537 * v**4 - 129.893 * v**3 + 382.268 * v**2 - 512.611 * v + 306.439
+    	cm = int(round(d))
+	return cm
 
 
 #servo control example

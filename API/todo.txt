@@ -3,7 +3,7 @@ set up pi
 set up wifi
 set up git
 pull code
-install node and modules
+install node and moduleso
 set up ssh
 install avafruit libraries
 install servo stuff
