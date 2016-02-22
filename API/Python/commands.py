@@ -55,12 +55,15 @@ def wait(seconds):
 
 
 #ir distance sensor code
+#takes 3.3V
 def get_ir_distance(channel):
 	r = []
 	for i in range(0, 10):
 	    r.append(mcp3008.readadc(channel))
     	a = sum(r)/10.0
     	v = (a/1023.0)*3.3
+
+    	#calibrate using this formulta
     	d = 16.2537 * v**4 - 129.893 * v**3 + 382.268 * v**2 - 512.611 * v + 306.439
     	cm = int(round(d))
 	return cm
@@ -73,7 +76,13 @@ def get_ir_distance(channel):
 #https://learn.adafruit.com/adafruits-raspberry-pi-lesson-8-using-a-servo-motor/software
 def move_servo(start_angle, end_angle):
 	delay_period = 0.01
-	for angle in range(start_angle, end_angle):
-		setServo(angle)
-		time.sleep(delay_period)
+
+	if (start_angle <= end_angle):
+		for angle in range(start_angle, end_angle):
+			setServo(angle)
+			time.sleep(delay_period)
+	else:
+		for angle in range(end_angle, start_angle):
+			setServo(start_angle - angle)
+			time.sleep(delay_period)
 
