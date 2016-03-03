@@ -169,7 +169,7 @@ def pull_to_zero():
 	retract_lin_actuator()
 	i=0
 	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) > distance):
-		i++
+		i = i + 1
 	stop_lin_actuator()
 
 
@@ -178,13 +178,13 @@ def pull_psu(distance):
 	i = 0;
 	extend_lin_actuator()
 	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) < distance):
-		i++
+		i = i + 1
 
 	wait(5)
 
 	retract_lin_actuator()
 	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) > PULL_OUT):
-		i++
+		i = i + 1
 
 	stop_lin_actuator()
 	wait(5)
