@@ -8,6 +8,7 @@ import mcp3008
 #stuff on callbacks
 #http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/
 
+
 #define all pins here
 LED = 7
 #servo goes to GPIO 18
@@ -15,6 +16,10 @@ SPICLK = 23
 SPIMISO = 21
 SPIMOSI = 19
 SPICS = 22
+
+#linear actuator pins
+LIN1 = 35
+LIN2 = 37
 
 LOW_VAL = 0
 PULL_OUT = 1
@@ -44,6 +49,8 @@ def setup():
 	#GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
 	GPIO.setup(LED, GPIO.OUT) ## Setup GPIO Pin 7 to OUT
 	#GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(LIN1, GPIO.OUT)
+	GPIO.setup(LIN2, GPIO.OUT)
 	#add setup code here
 
 	# set up the SPI interface pins
@@ -141,14 +148,20 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
 
 def extend_lin_actuator():
 	print "extend"
+	turnOn(LIN1)
+	turnOff(LIN2)
 	#set bits
 
 def retract_lin_actuator():
 	print "retract"
+	turnOn(LIN2)
+	turnOff(LIN1)
 	#set bits
 
 def stop_lin_actuator():
 	print "stop"
+	turnOff(LIN1)
+	turnOff(LIN2)
 	#set bits
 
 def pull_to_zero():
