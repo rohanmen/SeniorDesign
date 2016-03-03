@@ -8,6 +8,6 @@ setup()
 while True:
 	extend_lin_actuator()
 	wait(5)
-	retract_lin_actuator
+	retract_lin_actuator()
 	wait(5)
 
