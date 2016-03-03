@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO ## Import GPIO library
 import time
-import mcp3008
 
 #how to use pwm
 #https://sourceforge.net/p/raspberry-gpio-python/wiki/PWM/
@@ -82,7 +81,8 @@ def wait(seconds):
 def get_ir_distance(channel):
 	r = []
 	for i in range(0, 10):
-	    r.append(mcp3008.readadc(channel))
+	    #r.append(mcp3008.readadc(channel))
+	    r.append(1)
     	a = sum(r)/10.0
     	v = (a/1023.0)*3.3
 
