@@ -5,9 +5,9 @@ import urllib2
 import subprocess
 
 bashCommand = "hostname -I"
-#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-#IP = process.communicate()[0].split()[0]
-IP =  "172.20.10.3"
+process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+IP = process.communicate()[0].split()[0]
+#IP =  "172.20.10.3"
 
 PORT = '8080'
 URL = 'http://' + IP + ':' + PORT + '/api/command' 
