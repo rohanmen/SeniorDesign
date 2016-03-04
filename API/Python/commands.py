@@ -65,7 +65,7 @@ def setup():
 	set("servo_max", "180")		#set the maximum servo value
 	set("active", "1")			#make the output pin active
 
-def cleanup()
+def cleanup():
 	GPIO.cleanup()
 
 
