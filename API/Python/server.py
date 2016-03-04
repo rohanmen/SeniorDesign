@@ -1,8 +1,10 @@
 import json
 import time
 import urllib2
-#import commands
+import commands
 import subprocess
+
+commands.setup()
 
 bashCommand = "hostname -I"
 process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -21,23 +23,30 @@ def pull_psu(distance):
 	print distance
 
 
-while True:
+try:
+	while True:
 
-	try:
-		data = json.load(urllib2.urlopen(URL))
-		print data
+		try:
+			data = json.load(urllib2.urlopen(URL))
+			print data
 
-		if(data['type'] == 'pull_psu'):
-			print 'pull_psu', data['psu_id']
-			index = int(data['psu_id'])
-			pull_psu(coordinates[index]['x'])
+			if(data['type'] == 'pull_psu'):
+				print 'pull_psu', data['psu_id']
+				#index = int(data['psu_id'])
+				#pull_psu(coordinates[index]['x'])
+				commands.pull_psu()
 
-		elif(data['type'] == 'push_psu'):
-			print 'push_psu', data['psu_id']
-		elif(data['type'] == 'wait'):
-			print 'waiting', data['id'], 'seconds'
-	except:
-		print 'no connection'
+			elif(data['type'] == 'push_psu'):
+				print 'push_psu', data['psu_id']
+				commands.push_psu()
+			elif(data['type'] == 'wait'):
+				print 'waiting', data['id'], 'seconds'
+				commands.wait(data['id'])
+		except:
+			print 'no connection'
 
 
-	time.sleep(5)
+		time.sleep(5)
+finally:
+	commands.cleanup()
+
