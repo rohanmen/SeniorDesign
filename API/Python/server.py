@@ -41,7 +41,7 @@ try:
 				commands.push_psu()
 			elif(data['type'] == 'wait'):
 				print 'waiting', data['psu_id'], 'seconds'
-				commands.wait(int(data['psu_id'])
+				commands.wait(int(data['psu_id']))
 		except:
 			print 'no connection'
 
