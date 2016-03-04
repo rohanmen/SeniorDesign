@@ -1,4 +1,4 @@
-limport commands
+import commands
 
 LIN1 = 35
 LIN1 = 37

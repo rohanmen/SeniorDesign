@@ -163,8 +163,8 @@ def retract_lin_actuator():
 
 def stop_lin_actuator():
 	print "stop"
-	turnOn(LIN1)
-	turnOn(LIN2)
+	turnOff(LIN1)
+	turnOff(LIN2)
 	#set bits
 
 def pull_to_zero():
