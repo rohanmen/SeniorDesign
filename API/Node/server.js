@@ -73,6 +73,12 @@ router.get('/push_psu/:psu_id', function(req, res) {
 	res.json({message: 'sucess' });
 });
 
+router.get('/wait/:seconds', function(req, res) {
+	addCommand('wait', req.params.seconds);
+	//addCommand(req.body.id);
+	res.json({message: 'sucess' });
+});
+
 
 
 app.use('/api', router);
