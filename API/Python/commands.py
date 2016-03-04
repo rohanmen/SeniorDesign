@@ -187,7 +187,7 @@ def pull_psu():
 
 def push_psu():
 	extend_lin_actuator()
-	wait(2)
+	wait(3)
 	stop_lin_actuator()
 
 
