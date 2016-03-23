@@ -163,7 +163,7 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
  
         GPIO.output(cspin, True)
         
-        adcout >>= 1       # first bit is 'null' so drop it
+        #adcout >>= 1       # first bit is 'null' so drop it
         return adcout
 
 
