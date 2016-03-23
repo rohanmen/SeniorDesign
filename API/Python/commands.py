@@ -20,8 +20,16 @@ SPICS = 22
 LIN1 = 35
 LIN2 = 37
 
+#track actuator pins
+TRK1 = 0
+TRK2 = 0
+
 LOW_VAL = 0
 PULL_OUT = 1
+
+#ADC Channels
+LIN_CHN = 0
+TRK_CHN = 1
  
 
 
@@ -43,6 +51,8 @@ def setServo(angle):
 #***************************************************************
 
 
+#***************************************************************
+#******initialize the GPIO Pins*********************************
 def setup():
 	GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
 	#GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
@@ -60,10 +70,13 @@ def setup():
 
 
 	#servo setup
-	set("delayed", "0")			#turn the delay mode off
-	set("mode", "servo")		#set the mode to be 'servo'
-	set("servo_max", "180")		#set the maximum servo value
-	set("active", "1")			#make the output pin active
+	#set("delayed", "0")			#turn the delay mode off
+	#set("mode", "servo")		#set the mode to be 'servo'
+	#set("servo_max", "180")		#set the maximum servo value
+	#set("active", "1")			#make the output pin active
+#***************************************************************
+#***************************************************************
+
 
 def cleanup():
 	GPIO.cleanup()
@@ -149,31 +162,119 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
         adcout >>= 1       # first bit is 'null' so drop it
         return adcout
 
+
+#***************************************************************
+#*******FUNCTIONS TO CONTROL ACTUATORS**************************
+#***************************************************************
+#***************************************************************
+def get_lin_feedback():
+	return readadc(LIN_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
+
+def get_track_feedback():
+	return readadc(TRK_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
+
 def extend_lin_actuator():
-	print "extend"
+	print "extend lin actuator"
 	turnOn(LIN1)
 	turnOff(LIN2)
-	#set bits
+
+def extend_track_actuator():
+	print "extend track actuator"
+	turnOn(TRK1)
+	turnOff(TRK2)
 
 def retract_lin_actuator():
-	print "retract"
+	print "retractlin actuator"
 	turnOn(LIN2)
 	turnOff(LIN1)
-	#set bits
+
+def retract_track_actuator():
+	print "retract track actuator"
+	turnOn(TRK2)
+	turnOff(TRK1)
 
 def stop_lin_actuator():
-	print "stop"
+	print "stop lin actuator"
 	turnOn(LIN1)
 	turnOn(LIN2)
-	#set bits
+
+def stop_track_actuator():
+	print "stop track actuator"
+	turnOn(TRK1)
+	turnOn(TRK2)
+
+
+def pull_to_zero_lin():
+	print "pulling to zero lin"
+	retract_lin_actuator()
+	while (get_lin_feedback() > 0):
+		pass
+
+	stop_lin_actuator()
+
+def pull_to_zero_track():
+	print "pulling to zero track"
+	retract_track_actuator()
+	while (get_track_feedback() > 0):
+		pass
+	stop_track_actuator()
 
 def pull_to_zero():
-	print "zero"
-	retract_lin_actuator()
-	i=0
-	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) > distance):
-		i = i + 1
+	pull_to_zero_lin()
+	pull_to_zero_track()
+
+#***************************************************************
+#***************************************************************
+#***************************************************************
+
+
+#returns 0 if in tolerance
+#returns -1 if less than
+#returns 1 if greater than
+def is_in_tolerance(val, goal, tol):
+	if(abs(val - goal) <= tol):
+		return 0
+	elif (val < goal):
+		return -1
+	else
+		return 1
+
+def set_lin_actuator(distance):
+	extending = False
+	retracting = False
+	tolerance = 0.05
+	result = is_in_tolerance(get_lin_feedback(), distance, tolerance)
+	while (result != 0):
+		if(result == -1 and (extending == False)):
+			extend_lin_actuator()
+			extending = True
+			retracting = False
+		elif(result == 1 and (retracting == False))
+			retract_lin_actuator()
+			retracting = True
+			extending = False
+
+		result = is_in_tolerance(get_lin_feedback(), distance, tolerance)
 	stop_lin_actuator()
+		
+
+def set_track_actuator(distance):
+	extending = False
+	retracting = False
+	tolerance = 0.05
+	result = is_in_tolerance(get_track_feedback(), distance, tolerance)
+	while (result != 0):
+		if(result == -1 and (extending == False)):
+			extend_track_actuator()
+			extending = True
+			retracting = False
+		elif(result == 1 and (retracting == False))
+			retract_track_actuator()
+			retracting = True
+			extending = False
+
+		result = is_in_tolerance(get_track_feedback(), distance, tolerance)
+	stop_track_actuator()
 
 
 def pull_psu():
@@ -191,20 +292,54 @@ def push_psu():
 	stop_lin_actuator()
 
 
-def pull_psu2(distance):
-	print distance
-	i = 0;
-	extend_lin_actuator()
-	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) < distance):
-		i = i + 1
 
+#xDis1 = distance so the hook is right outside the hook
+#xDis2 = distance so that the screw is inside the hook
+#zDis1 = distance so the screw in insdie the hook
+#zDis2 = amount to pull out
+#zDis3 = area where the arm is ready to push the psu in (outside the hook)
+def pull_psu(xDis1, xDis2, zDis1, zDis2, zDis3):
+
+	#set right by hook
+	set_track_actuator(xDis1)
+	wait(1)
+
+	#extend arm
+	set_lin_actuator(zDis)
+	wait(1)
+
+	#get into hook
+	set_track_actuator(xDis2)
+	wait(1)
+
+	#pull out
+	set_lin_actuator(zDis2)
+	wait(1)
+
+	#move hook out
+	set_track_actuator(xDis1)
+	wait(1)
+
+	#pull back before hook
+	set_lin_actuator(zDis3)
+	wait(1)
+
+	#move right ahead of hook
+	set_track_actuator(xDis1)
+	wait(1)
+
+def pull_psu(zDis1, zDis2):
+	set_lin_actuator(zDis1)
 	wait(5)
+	set_lin_actuator(zDis2)
 
-	retract_lin_actuator()
-	while (readadc(0,SPICLK,SPIMOSI,SPIMISO,SPICS) > PULL_OUT):
-		i = i + 1
+def push_psu(xDis, zDis):
+	set_track_actuator(xDis)
+	wait(1)
+	set_lin_actuator(zDis)
+	wait(1)
+	pull_to_zero()
 
-	stop_lin_actuator()
-	wait(5)
-
-
+def push_psu(zDis):
+	set_lin_actuator(zDis)
+	wait(1)

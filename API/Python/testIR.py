@@ -1,7 +1,7 @@
-from commands import *
+import commands
 
+DELAY = 0.25
 
 while True:
-	distance = get_ir_distance(channel)
-	print distance, "cm"
-	wait(1)
+	print commands.get_track_feedback()
+	commands.wait(DELAY)
