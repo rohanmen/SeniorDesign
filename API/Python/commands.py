@@ -11,9 +11,13 @@ import time
 #define all pins here
 LED = 7
 #servo goes to GPIO 18
+#orange
 SPICLK = 23
+#yellow
 SPIMISO = 21
+#blue
 SPIMOSI = 19
+#violet
 SPICS = 22
 
 #linear actuator pins
