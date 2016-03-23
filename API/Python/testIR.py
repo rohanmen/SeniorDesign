@@ -1,6 +1,6 @@
 import commands
 
-DELAY = 0.25
+DELAY = 2
 commands.setup()
 
 while True:
