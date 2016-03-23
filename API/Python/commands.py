@@ -253,7 +253,7 @@ def set_lin_actuator(distance):
 			extend_lin_actuator()
 			extending = True
 			retracting = False
-		elif(result == 1 and (retracting == False))
+		elif(result == 1 and (retracting == False)):
 			retract_lin_actuator()
 			retracting = True
 			extending = False
@@ -272,7 +272,7 @@ def set_track_actuator(distance):
 			extend_track_actuator()
 			extending = True
 			retracting = False
-		elif(result == 1 and (retracting == False))
+		elif(result == 1 and (retracting == False)):
 			retract_track_actuator()
 			retracting = True
 			extending = False
