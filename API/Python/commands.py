@@ -240,7 +240,7 @@ def is_in_tolerance(val, goal, tol):
 		return 0
 	elif (val < goal):
 		return -1
-	else
+	else:
 		return 1
 
 def set_lin_actuator(distance):
