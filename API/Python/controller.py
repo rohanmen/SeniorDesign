@@ -31,7 +31,7 @@ def onKeyPress(event):
 
 
 
-
+commands.setup()
 root = tk.Tk()
 root.geometry('300x200')
 
