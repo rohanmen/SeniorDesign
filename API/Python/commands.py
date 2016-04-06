@@ -377,7 +377,7 @@ def calibrate():
 		pass
 
 	stop_lin_actuator()
-	MAX_DISTANCE = get_lin_feedback() - 5
+	MAX_DISTANCE = get_lin_feedback() - 10
 	print MAX_DISTANCE
 	pull_to_zero_lin()
 
