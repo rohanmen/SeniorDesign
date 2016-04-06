@@ -398,6 +398,15 @@ def pull_wait_push(xDis1, xDis2, seconds):
 	set_track_actuator(MIN_DISTANCE_LIN)
 	wait(1)
 
+def pull_psu(xDis1, xDis2):
+	set_track_actuator(xDis1)
+	wait(1)
+	set_lin_actuator(MAX_DISTANCE_LIN)
+	wait(1)
+	set_track_actuator(xDis2)
+	wait(1)
+	set_track_actuator(MAX_DISTANCE_LIN - PULL_OUT)
+
 
 def push_psu(xDis):
 	set_track_actuator(xDis)
