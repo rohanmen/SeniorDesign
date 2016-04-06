@@ -369,7 +369,7 @@ def pull_to_zero():
 def calibrate():
 	print "calibrating"
 
-	#extend_lin_actuator()
+	extend_lin_actuator()
 	#while (not(GPIO.input(C_BUTTON))):
 		#pass
 	while (get_current_feedback() < 100):
