@@ -28,6 +28,7 @@ def onKeyPress(event):
 	elif char == 'p':
 		print "lin val : " + str(commands.get_lin_feedback())
 		print "track val : " + str(commands.get_track_feedback())
+		print "vertical val : " + str(commands.get_vertical_feedback())
 
 
 
