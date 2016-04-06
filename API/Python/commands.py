@@ -373,11 +373,12 @@ def calibrate():
 	wait(0.5)
 	#while (not(GPIO.input(C_BUTTON))):
 		#pass
-	while (get_current_feedback() < 100):
+	while (get_current_feedback() < 80):
 		pass
 
 	stop_lin_actuator()
-	MAX_DISTANCE = get_lin_feedback() - 20
+	MAX_DISTANCE = get_lin_feedback() - 5
+	print MAX_DISTANCE
 	pull_to_zero_lin()
 
 
