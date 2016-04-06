@@ -285,7 +285,7 @@ def is_in_tolerance(val, goal, tol):
 def set_lin_actuator(distance):
 	extending = False
 	retracting = False
-	tolerance = 4
+	tolerance = 2
 	result = is_in_tolerance(get_lin_feedback(), distance, tolerance)
 	while (result != 0):
 		if(result == -1 and (extending == False)):
@@ -323,7 +323,7 @@ def set_track_actuator(distance):
 def set_vertical(distance):
 	extending = False
 	retracting = False
-	tolerance = 4
+	tolerance = 2
 	result = is_in_tolerance(get_vertical_feedback(), distance, tolerance)
 	while (result != 0):
 		if(result == -1 and (extending == False)):
