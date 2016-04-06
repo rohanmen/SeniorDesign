@@ -41,7 +41,7 @@ try:
 			elif(data['type'] == 'pull_psu'):
 				print 'pull_psu', data['psu_id']
 				#pull_psu(coordinates[index]['x'])
-				#commands.pull_psu()
+				commands.pull_psu()
 			elif(data['type'] == 'push_psu'):
 				print 'push_psu', data['psu_id']
 				#commands.push_psu()

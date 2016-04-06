@@ -377,8 +377,8 @@ def calibrate():
 		pass
 
 	stop_lin_actuator()
-	MAX_DISTANCE = get_lin_feedback() - 10
-	print MAX_DISTANCE
+	MAX_DISTANCE_LIN = get_lin_feedback() - 10
+	print MAX_DISTANCE_LIN
 	pull_to_zero_lin()
 
 
@@ -403,3 +403,18 @@ def push_psu(xDis):
 	set_track_actuator(xDis)
 	wait(1)
 	set_lin_actuator()
+
+def pull_psu():
+	extend_lin_actuator()
+	wait(0.5)
+	#while (not(GPIO.input(C_BUTTON))):
+		#pass
+	while (get_current_feedback() < 90):
+		pass
+
+	stop_lin_actuator()
+	MAX_DISTANCE_LIN = get_lin_feedback() - 10
+	set_lin_actuator(MAX_DISTANCE_LIN)
+	wait(3)
+	set_lin_actuator(MAX_DISTANCE_LIN - PULL_OUT)
+

@@ -94,23 +94,23 @@ router.get('/wait/:seconds', function(req, res) {
 });
 
 
-router.get('/pull_psu/:psu_level/:psu_id', function(req, res) {
-	addCommand('pull_psu', req.params.psu_level, req.params.psu_id, 0);
+router.get('/pull_psu/:psu_id', function(req, res) {
+	addCommand('pull_psu', 0, req.params.psu_id, 0);
 	//addCommand(req.body.id);
 	res.json({message: 'sucess' });
 });
 
-router.get('/push_psu/:psu_level/:psu_id', function(req, res) {
-	addCommand('push_psu', req.params.psu_level, req.params.psu_id, 0);
+router.get('/push_psu/:psu_id', function(req, res) {
+	addCommand('push_psu', 0, req.params.psu_id, 0);
 	//addCommand(req.body.id);
 	res.json({message: 'sucess' });
 });
 
-router.get("/pull_wait_push/:psu_level/:psu_id:/:seconds") {
+router.get('/pull_wait_push/:psu_level/:psu_id:/:seconds', function(req, res) {
 	addCommand('pull_push_wait', req.params.psu_level, req.params.psu_id, req.params.seconds);
 	//addCommand(req.body.id);
 	res.json({message: 'sucess' });
-}
+});
 
 
 
