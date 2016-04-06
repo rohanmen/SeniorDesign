@@ -372,7 +372,7 @@ def calibrate():
 	extend_lin_actuator()
 	#while (not(GPIO.input(C_BUTTON))):
 		#pass
-	while (get_current_feedback() < 100):
+	while (get_current_feedback() < 150):
 		pass
 
 	stop_lin_actuator()
