@@ -46,6 +46,7 @@ LFT_TRK2 = 13
 LIN_CHN = 0
 TRK_CHN = 1
 VER_CHN = 2
+CUR_CHN = 3
 
 #BUTTONS
 #Calibrate Button
@@ -211,6 +212,9 @@ def get_track_feedback():
 def get_vertical_feedback():
 	return readadc(VER_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
 
+def get_current_feedback():
+	return readadc(CUR_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
+
 def extend_lin_actuator():
 	print "extend lin actuator"
 	turnOn(LIN1)
@@ -365,11 +369,14 @@ def pull_to_zero():
 def calibrate():
 	print "calibrating"
 
-	extend_lin_actuator()
-	while (not(GPIO.input(C_BUTTON))):
+	#extend_lin_actuator()
+	#while (not(GPIO.input(C_BUTTON))):
+		#pass
+	while (get_current_feedback() < 100):
 		pass
+
 	stop_lin_actuator()
-	MAX_DISTANCE = get_lin_feedback() - 40
+	MAX_DISTANCE = get_lin_feedback() - 20
 	pull_to_zero_lin()
 
 
