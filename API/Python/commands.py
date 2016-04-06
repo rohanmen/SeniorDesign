@@ -344,7 +344,7 @@ def set_vertical2(level):
 	else:
 		descend()
 
-	while(!(GPIO.input(pin))):
+	while(not(GPIO.input(pin))):
 		pass
 	stop_vertical()
 
@@ -366,7 +366,7 @@ def calibrate():
 	print "calibrating"
 
 	extend_lin_actuator()
-	while (!(GPIO.input(C_BUTTON))):
+	while (not(GPIO.input(C_BUTTON))):
 		pass
 	stop_lin_actuator()
 	MAX_DISTANCE = get_lin_feedback() - 40
