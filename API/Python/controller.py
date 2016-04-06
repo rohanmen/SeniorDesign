@@ -25,7 +25,7 @@ def onKeyPress(event):
 		print "stopping"
 		commands.stop_lin_actuator()
 		commands.stop_track_actuator()
-	elif char == 'p'
+	elif char == 'p':
 		print "lin val : " + commands.get_lin_feedback()
 		print "track val : " + commands.get_track_feedback()
 
