@@ -1,4 +1,4 @@
-limport RPi.GPIO as GPIO ## Import GPIO library
+import RPi.GPIO as GPIO ## Import GPIO library
 import time
 
 #how to use pwm
