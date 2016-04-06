@@ -29,24 +29,30 @@ try:
 		try:
 			data = json.load(urllib2.urlopen(URL))
 			print data
+			index = int(data['psu_id'])
 
-			if(data['type'] == 'pull_psu'):
+			if(data['type'] == 'pull_wait_push'):
+				print 'pull_wait_push'
+				x1 = coordinates[index]['x1']
+				x2 = coordinates[index]['x2']
+				seconds = data['wait']
+				print x1, x2, seconds
+				commands.pull_wait_push(x1,x2,seconds)
+			elif(data['type'] == 'pull_psu'):
 				print 'pull_psu', data['psu_id']
-				#index = int(data['psu_id'])
 				#pull_psu(coordinates[index]['x'])
-				commands.pull_psu()
-
+				#commands.pull_psu()
 			elif(data['type'] == 'push_psu'):
 				print 'push_psu', data['psu_id']
-				commands.push_psu()
+				#commands.push_psu()
 			elif(data['type'] == 'wait'):
 				print 'waiting', data['psu_id'], 'seconds'
-				commands.wait(int(data['psu_id']))
+				#commands.wait(int(data['psu_id']))
 		except:
 			print 'no connection'
 
 
-		time.sleep(5)
+		time.sleep(1)
 finally:
 	commands.cleanup()
 

@@ -1,4 +1,6 @@
 {
 	"type" : "stuff",
-	"psu_id" : 1
+	"psu_level" : 0,
+	"psu_id" : 1,
+	"wait" : 0
 }

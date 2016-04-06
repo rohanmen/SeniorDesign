@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO ## Import GPIO library
+limport RPi.GPIO as GPIO ## Import GPIO library
 import time
 
 #how to use pwm
@@ -7,6 +7,13 @@ import time
 #stuff on callbacks
 #http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/
 
+#GLOBALS
+MAX_DISTANCE_LIN = 0
+MIN_DISTANCE_LIN = 100
+MAX_DISTANCE_TRACK = 700
+MIN_DISTANCE_TRACK = 100
+PULL_OUT = 50
+CURRENT_LEVEL = 0
 
 #define all pins here
 LED = 7
@@ -25,15 +32,28 @@ LIN1 = 35
 LIN2 = 37
 
 #track actuator pins
-TRK1 = 0
-TRK2 = 0
+TRK1 = 36
+TRK2 = 38
 
-LOW_VAL = 0
-PULL_OUT = 1
+#vertical track actuator pins
+RGT_TRK1 = 3
+RGT_TRK2 = 5
+LFT_TRK1 = 11
+LFT_TRK2 = 13
+
 
 #ADC Channels
 LIN_CHN = 0
 TRK_CHN = 1
+VER_CHN = 2
+
+#BUTTONS
+#Calibrate Button
+C_BUTTON = 40
+#Vertical Level Limit Switches
+LEVEL0 = 29
+LEVEL1 = 31
+LEVELS = [LEVEL0, LEVEL1]
  
 
 
@@ -61,10 +81,22 @@ def setup():
 	GPIO.setmode(GPIO.BOARD) ## Use board pin numbering
 	#GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
 	GPIO.setup(LED, GPIO.OUT) ## Setup GPIO Pin 7 to OUT
-	#GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(LIN1, GPIO.OUT)
+	#GPIO.setup(C_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(C_BUTTON, GPIO.IN)	#calibrate button
+	GPIO.setup(LIN1, GPIO.OUT)		#lin actuator
 	GPIO.setup(LIN2, GPIO.OUT)
+	GPIO.setup(TRK1, GPIO.OUT)		#track actuator
+	GPIO.setup(TRK2, GPIO.OUT)
+	GPIO.setup(RGT_TRK1, GPIO.OUT)	#vertical
+	GPIO.setup(RGT_TRK2, GPIO.OUT)
+	GPIO.setup(LFT_TRK1, GPIO.OUT)
+	GPIO.setup(LFT_TRK1, GPIO.OUT)
+	GPIO.setup(LEVEL0, GPIO.IN)		#limit switches
+	GPIO.setup(LEVEL1, GPIO.IN)
+
 	#add setup code here
+
+	#add setup for vertical actuators and limit switches
 
 	# set up the SPI interface pins
 	GPIO.setup(SPIMOSI, GPIO.OUT)
@@ -78,6 +110,7 @@ def setup():
 	#set("mode", "servo")		#set the mode to be 'servo'
 	#set("servo_max", "180")		#set the maximum servo value
 	#set("active", "1")			#make the output pin active
+	time.sleep(0.5)
 #***************************************************************
 #***************************************************************
 
@@ -94,7 +127,6 @@ def turnOff(pin):
 
 def wait(seconds):
 	time.sleep(seconds)
-
 
 #ir distance sensor code
 #takes 3.3V
@@ -128,7 +160,6 @@ def move_servo(start_angle, end_angle):
 		for angle in range(end_angle, start_angle):
 			setServo(start_angle - angle)
 			time.sleep(delay_period)
-
 
 
 # read SPI data from MCP3008 chip, 8 possible adc's (0 thru 7)
@@ -177,6 +208,9 @@ def get_lin_feedback():
 def get_track_feedback():
 	return readadc(TRK_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
 
+def get_vertical_feedback():
+	return readadc(VER_CHN,SPICLK,SPIMOSI,SPIMISO,SPICS)
+
 def extend_lin_actuator():
 	print "extend lin actuator"
 	turnOn(LIN1)
@@ -207,25 +241,26 @@ def stop_track_actuator():
 	turnOn(TRK1)
 	turnOn(TRK2)
 
+def elevate():
+	print "elevating"
+	turnOn(RGT_TRK1)
+	turnOn(LFT_TRK1)
+	turnOff(RGT_TRK2)
+	turnOff(LFT_TRK2)
 
-def pull_to_zero_lin():
-	print "pulling to zero lin"
-	retract_lin_actuator()
-	while (get_lin_feedback() > 0):
-		pass
+def descend():
+	print "descending"
+	turnOn(RGT_TRK2)
+	turnOn(LFT_TRK2)
+	turnOff(RGT_TRK1)
+	turnOff(LFT_TRK1)
 
-	stop_lin_actuator()
-
-def pull_to_zero_track():
-	print "pulling to zero track"
-	retract_track_actuator()
-	while (get_track_feedback() > 0):
-		pass
-	stop_track_actuator()
-
-def pull_to_zero():
-	pull_to_zero_lin()
-	pull_to_zero_track()
+def stop_vertical():
+	print "stopping vertical"
+	turnOn(RGT_TRK1)
+	turnOn(LFT_TRK1)
+	turnOn(RGT_TRK2)
+	turnOn(LFT_TRK2)
 
 #***************************************************************
 #***************************************************************
@@ -246,7 +281,7 @@ def is_in_tolerance(val, goal, tol):
 def set_lin_actuator(distance):
 	extending = False
 	retracting = False
-	tolerance = 0.05
+	tolerance = 10
 	result = is_in_tolerance(get_lin_feedback(), distance, tolerance)
 	while (result != 0):
 		if(result == -1 and (extending == False)):
@@ -265,7 +300,7 @@ def set_lin_actuator(distance):
 def set_track_actuator(distance):
 	extending = False
 	retracting = False
-	tolerance = 0.05
+	tolerance = 10
 	result = is_in_tolerance(get_track_feedback(), distance, tolerance)
 	while (result != 0):
 		if(result == -1 and (extending == False)):
@@ -280,70 +315,82 @@ def set_track_actuator(distance):
 		result = is_in_tolerance(get_track_feedback(), distance, tolerance)
 	stop_track_actuator()
 
+#using string potentiometer
+def set_vertical(distance):
+	extending = False
+	retracting = False
+	tolerance = 10
+	result = is_in_tolerance(get_vertical_feedback(), distance, tolerance)
+	while (result != 0):
+		if(result == -1 and (extending == False)):
+			elevate()
+			extending = True
+			retracting = False
+		elif(result == 1 and (retracting == False)):
+			descend()
+			retracting = True
+			extending = False
 
-def pull_psu():
+		result = is_in_tolerance(get_vertical_feedback(), distance, tolerance)
+	stop_vertical()
+
+def set_vertical2(level):
+	pin = LEVELS[level]
+
+	if (level == CURRENT_LEVEL):
+		return
+	elif(level < CURRENT_LEVEL):
+		elevate()
+	else:
+		descend()
+
+	while(!(GPIO.input(pin))):
+		pass
+	stop_vertical()
+
+
+def pull_to_zero_lin():
+	print "pulling to zero lin"
+	set_lin_actuator(MIN_DISTANCE_LIN)
+
+def pull_to_zero_track():
+	print "pulling to zero track"
+	set_track_actuator(MIN_DISTANCE_TRACK)
+
+def pull_to_zero():
+	pull_to_zero_lin()
+	pull_to_zero_track()
+
+
+def calibrate():
+	print "calibrating"
+
 	extend_lin_actuator()
-	wait(5)
+	while (!(GPIO.input(C_BUTTON))):
+		pass
 	stop_lin_actuator()
-	wait(10)
-	retract_lin_actuator()
-	wait(2)
-	stop_lin_actuator()
-
-def push_psu():
-	extend_lin_actuator()
-	wait(3)
-	stop_lin_actuator()
+	MAX_DISTANCE = get_lin_feedback() - 40
+	pull_to_zero_lin()
 
 
-
-#xDis1 = distance so the hook is right outside the hook
-#xDis2 = distance so that the screw is inside the hook
-#zDis1 = distance so the screw in insdie the hook
-#zDis2 = amount to pull out
-#zDis3 = area where the arm is ready to push the psu in (outside the hook)
-def pull_psu(xDis1, xDis2, zDis1, zDis2, zDis3):
-
-	#set right by hook
+def pull_wait_push(xDis1, xDis2, seconds):
 	set_track_actuator(xDis1)
 	wait(1)
-
-	#extend arm
-	set_lin_actuator(zDis)
+	set_lin_actuator(MAX_DISTANCE_LIN)
 	wait(1)
-
-	#get into hook
 	set_track_actuator(xDis2)
 	wait(1)
-
-	#pull out
-	set_lin_actuator(zDis2)
+	set_track_actuator(MAX_DISTANCE_LIN - PULL_OUT)
+	wait(seconds)
+	set_track_actuator(MAX_DISTANCE_LIN)
 	wait(1)
-
-	#move hook out
 	set_track_actuator(xDis1)
 	wait(1)
-
-	#pull back before hook
-	set_lin_actuator(zDis3)
+	set_track_actuator(MIN_DISTANCE_LIN)
 	wait(1)
 
-	#move right ahead of hook
-	set_track_actuator(xDis1)
-	wait(1)
 
-def pull_psu(zDis1, zDis2):
-	set_lin_actuator(zDis1)
-	wait(5)
-	set_lin_actuator(zDis2)
-
-def push_psu(xDis, zDis):
+def push_psu(xDis):
 	set_track_actuator(xDis)
 	wait(1)
-	set_lin_actuator(zDis)
-	wait(1)
-	pull_to_zero()
-
-def push_psu(zDis):
-	set_lin_actuator(zDis)
-	wait(1)
+	set_lin_actuator()
