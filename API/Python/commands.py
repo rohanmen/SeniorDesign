@@ -55,6 +55,8 @@ C_BUTTON = 40
 LEVEL0 = 29
 LEVEL1 = 31
 LEVELS = [LEVEL0, LEVEL1]
+
+CURRENT_THRESH = 90
  
 
 
@@ -365,6 +367,15 @@ def pull_to_zero():
 	pull_to_zero_lin()
 	pull_to_zero_track()
 
+def find_end_lin():
+	extend_lin_actuator()
+	wait(0.5)
+	while (get_current_feedback() < CURRENT_THRESH):
+		pass
+
+	stop_lin_actuator()
+	return get_lin_feedback()	
+
 
 def calibrate():
 	print "calibrating"
@@ -399,32 +410,19 @@ def pull_wait_push(xDis1, xDis2, seconds):
 	wait(1)
 
 def pull_psu(xDis1, xDis2):
+	print xDis1, xDis2
 	set_track_actuator(xDis1)
 	wait(1)
-	print MAX_DISTANCE_LIN
-	set_lin_actuator(MAX_DISTANCE_LIN)
-	wait(1)
+	max_dis = find_end_lin()
+	set_lin_actuator(max_dis - 10)
+	wait(0.5)
 	set_track_actuator(xDis2)
 	wait(1)
-	set_track_actuator(MAX_DISTANCE_LIN - PULL_OUT)
+	set_track_actuator(max_dis - PULL_OUT)
 
 
 def push_psu(xDis):
 	set_track_actuator(xDis)
 	wait(1)
-	set_lin_actuator()
 
-def pull_psu():
-	extend_lin_actuator()
-	wait(0.5)
-	#while (not(GPIO.input(C_BUTTON))):
-		#pass
-	while (get_current_feedback() < 90):
-		pass
-
-	stop_lin_actuator()
-	MAX_DISTANCE_LIN = get_lin_feedback() - 10
-	set_lin_actuator(MAX_DISTANCE_LIN)
-	wait(3)
-	set_lin_actuator(MAX_DISTANCE_LIN - PULL_OUT)
 
