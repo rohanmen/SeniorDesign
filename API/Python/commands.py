@@ -8,7 +8,7 @@ import time
 #http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/
 
 #GLOBALS
-MAX_DISTANCE_LIN = 0
+MAX_DISTANCE_LIN = 950
 MIN_DISTANCE_LIN = 100
 MAX_DISTANCE_TRACK = 700
 MIN_DISTANCE_TRACK = 100
@@ -285,6 +285,11 @@ def is_in_tolerance(val, goal, tol):
 		return 1
 
 def set_lin_actuator(distance):
+
+	#check bounds
+	if(distance < MIN_DISTANCE_LIN or distance > MAX_DISTANCE_LIN):
+		return
+
 	extending = False
 	retracting = False
 	tolerance = 2
@@ -304,6 +309,11 @@ def set_lin_actuator(distance):
 		
 
 def set_track_actuator(distance):
+
+	#check bounds
+	if(distance < MIN_DISTANCE_TRACK or distance > MAX_DISTANCE_TRACK):
+		return
+
 	extending = False
 	retracting = False
 	tolerance = 2
