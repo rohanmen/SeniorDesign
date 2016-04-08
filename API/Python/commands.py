@@ -431,6 +431,10 @@ def pull_psu(xDis1, xDis2):
 	print max_dis
 	set_lin_actuator(max_dis - 200)
 
+	#push
+	wait(5)
+	set_lin_actuator(max_dis)
+
 
 def push_psu(xDis):
 	set_track_actuator(xDis)
