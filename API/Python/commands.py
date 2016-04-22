@@ -93,7 +93,7 @@ def setup():
 	GPIO.setup(RGT_TRK1, GPIO.OUT)	#vertical
 	GPIO.setup(RGT_TRK2, GPIO.OUT)
 	GPIO.setup(LFT_TRK1, GPIO.OUT)
-	GPIO.setup(LFT_TRK1, GPIO.OUT)
+	GPIO.setup(LFT_TRK2, GPIO.OUT)
 	GPIO.setup(LEVEL0, GPIO.IN)		#limit switches
 	GPIO.setup(LEVEL1, GPIO.IN)
 
