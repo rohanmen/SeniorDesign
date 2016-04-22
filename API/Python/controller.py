@@ -25,6 +25,15 @@ def onKeyPress(event):
 		print "stopping"
 		commands.stop_lin_actuator()
 		commands.stop_track_actuator()
+	elif char == 'i':
+		print "going up"
+		commands.elevate()
+	elif char == 'k':
+		print "going donwn"
+		commands.descend()
+	elif char == 'l':
+		print "stopping vertical"
+		commands.stop_vertical()
 	elif char == 'p':
 		print "lin val : " + str(commands.get_lin_feedback())
 		print "track val : " + str(commands.get_track_feedback())
