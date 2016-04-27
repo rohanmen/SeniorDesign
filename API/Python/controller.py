@@ -38,6 +38,7 @@ def onKeyPress(event):
 		print "lin val : " + str(commands.get_lin_feedback())
 		print "track val : " + str(commands.get_track_feedback())
 		print "vertical val : " + str(commands.get_vertical_feedback())
+		print "current val : " + str(commands.get_current_feedback())
 
 
 
