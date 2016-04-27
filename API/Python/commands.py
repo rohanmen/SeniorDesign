@@ -442,6 +442,7 @@ def pull_psu(xDis1, xDis2):
 	#push
 	wait(2)
 	set_lin_actuator(max_dis - DIFF)
+	set_lin_actuator(MIN_DISTANCE_LIN)
 
 
 def push_psu(xDis):
