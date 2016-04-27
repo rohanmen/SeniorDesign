@@ -14,7 +14,7 @@ MAX_DISTANCE_TRACK = 700
 MIN_DISTANCE_TRACK = 100
 PULL_OUT = 50
 CURRENT_LEVEL = 0
-DIFF = 80
+DIFF = 75
 
 #define all pins here
 LED = 7
@@ -440,7 +440,7 @@ def pull_psu(xDis1, xDis2):
 	set_track_actuator(xDis2)
 
 	#push
-	wait(5)
+	wait(2)
 	set_lin_actuator(max_dis - DIFF)
 
 
