@@ -36,8 +36,8 @@ TRK1 = 36
 TRK2 = 38
 
 #vertical track actuator pins
-RGT_TRK1 = 3
-RGT_TRK2 = 5
+RGT_TRK1 = 5
+RGT_TRK2 = 3
 LFT_TRK1 = 11
 LFT_TRK2 = 13
 
