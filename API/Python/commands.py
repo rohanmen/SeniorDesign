@@ -28,8 +28,8 @@ SPIMOSI = 19
 SPICS = 22
 
 #linear actuator pins
-LIN1 = 35
-LIN2 = 37
+LIN1 = 37
+LIN2 = 35
 
 #track actuator pins
 TRK1 = 36
