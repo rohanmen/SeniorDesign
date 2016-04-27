@@ -39,6 +39,7 @@ function addCommand(type, psu_level, psu_id, seconds)
 	json['type'] = type;
 	json['psu_level'] = psu_level 
 	json['psu_id'] = psu_id;
+	json['wait'] = seconds;
 	console.log("here is the json");
 	console.log(json);
 	database.push(json);
@@ -106,7 +107,7 @@ router.get('/push_psu/:psu_id', function(req, res) {
 	res.json({message: 'sucess' });
 });
 
-router.get('/pull_wait_push/:psu_level/:psu_id:/:seconds', function(req, res) {
+router.get('/pull_wait_push/:psu_level?/:psu_id?/:seconds?', function(req, res) {
 	addCommand('pull_push_wait', req.params.psu_level, req.params.psu_id, req.params.seconds);
 	//addCommand(req.body.id);
 	res.json({message: 'sucess' });
