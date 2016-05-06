@@ -37,7 +37,7 @@ try:
 				x2 = coordinates[index]['x2']
 				seconds = data['wait']
 				print x1, x2, seconds
-				commands.pull_wait_push(x1,x2,seconds)
+				commands.pull_psu(x1,x2)
 			elif(data['type'] == 'pull_psu'):
 				print 'pull_psu', data['psu_id']
 				#pull_psu(coordinates[index]['x'])
